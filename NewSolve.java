@@ -1,19 +1,23 @@
+import java.io.IOException;
 import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class NewSolve {
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         Scanner in = new Scanner(System.in);
-        String s; s = in.nextLine();
+        String s; s = in.nextLine(); int toi = 1;
         in.close();
         String [] h = s.split(" ");
-        if(h.length != 3) System.out.println("throws Exception");
+        if(h.length != 3)
+            throw new IOException("введено неподходящее количество чисел/знаков");
         else{
             char[] a = h[0].toCharArray(), b = h[2].toCharArray();
             int x = V(a), y = V(b);
-            if(x != y) System.out.println("throws Exception");
+            if(x != y) throw new IOException("неподходящие числа");
             else if (x == 0) {
                 int aq = Lock(a), bq = Lock(b);
+                if(aq > 10 || bq > 10)
+                    throw new IOException("числа не входят в рамки от 1 до 10");
                 switch (h[1]) {
                     case "+" ->{
                         aq += bq; break;}
@@ -23,21 +27,23 @@ public class NewSolve {
                         aq *= bq; break;}
                     case "/" ->{
                         aq /= bq; break;}
-                    default ->{aq = -1;}
+                    default ->{
+                        throw new IOException("неизвестный арифметический знак");
+                    }
                 }
-                if (aq < 1) System.out.println("throws Exception");
+                if (aq < 1)
+                    throw new IOException("результат меньше 1 -> нет римского числа");
                 else unLock(aq);
             }
             else{
-                int p = 0;
-                if(a[0] == '-'){p = 1; a[0] = '0';}// если первое число отрицательное
-                    x = se(a); y = se(b);
-                if(x != 0 || y != 0) System.out.println("throws Exception");
+                x = se(a); y = se(b);
+                if(x != 0 || y != 0) throw new IOException("неподходящие числа");
                 else{
                     int aq = 0, bq = 0;
                     for(char i: a) aq = aq * 10 +(int)(i - '0');
                     for(char i: b) bq = bq * 10 +(int)(i - '0');
-                    if(p == 1) aq = -aq;
+                    if(aq > 10 || aq < 1 || bq > 10 || bq < 1)
+                        throw new IOException("числа не входят в рамки от 1 до 10");
                     switch (h[1]) {
                         case "+" ->{
                             aq += bq; System.out.println(aq); break;}
@@ -48,13 +54,14 @@ public class NewSolve {
                         case "/" ->{
                             aq /= bq; System.out.println(aq); break;}
                         default ->{
-                            System.out.println("throws Exception");}
+                            throw new IOException("неизвестный арифметический знак");
+                        }
                     }
                 }// вывод арабских чиселок
             }
         }
     }
-    public static int V(char[] a){
+    static int V(char[] a){
         char[] A = {'M','D','C','L','X','V','I'};
         int ind = 0;
         for(char x: a){
@@ -66,7 +73,7 @@ public class NewSolve {
         }
         return ind;
     }//проверка на то, все ли символы числа римские
-    public static int se(char[] a){
+    static int se(char[] a){
         int ind = 0;
         for(char x: a){
             int u = 0;
@@ -77,7 +84,7 @@ public class NewSolve {
         }
         return ind;
     }////проверка на то, все ли символы числа арабские
-    public static int Lock(char[] a){
+    static int Lock(char[] a){
         int x = 0;
         char[] b = {'M','D','C','L','X','V','I'};
         int[] c = {1000, 500, 100, 50, 10, 5, 1};
@@ -93,7 +100,7 @@ public class NewSolve {
         }
         return x;
     } // перевод из римских в арабские
-    public static void unLock(int a){
+    static void unLock(int a){
         char[] b = {'M','D','C','L','X','V','I'};
         int[] c = {1000, 500, 100, 50, 10, 5, 1};
         char [] s = new char[20]; int i = 0, o = 0, ig = 0;
